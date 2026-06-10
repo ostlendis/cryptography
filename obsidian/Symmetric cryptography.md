@@ -139,8 +139,7 @@ The compression function should have an output that looks random. For that we ca
 Sponge Construction is permutation based hashing and i used by SHA-3. It is resistant to length extension attacks and at it's core uses a [[Pseudo Random Function Family#Pseudo Random Permutation|PRP]] function.
 ![[Pasted image 20260609141040.png|613]]
 # Message Authentication
-Message Authentication has the goal to provide an authentic channel. This means you can transmit data and provide proof that the data comes from you, like a signature. This works with a shared key
-
+Message Authentication has the goal to provide an authentic channel. This means you can transmit data and provide proof that the data comes from you, like a signature. This works with a shared key.
 ## Message Authentication Code
 Message Authentication Code (MAC) is a keyed function that generates a fingerprint of a message based on a key. The message is then sent along the with the fingerprint as a tag through the channel. MACs are used in IPsec and TLS
 ### Security Properties
@@ -162,3 +161,38 @@ HMAC, as by RFC2104 incorporates two hashes such that $HMAC=H(k⊕OPAD|H(k⊕IPA
 OPAD is 5c5c…5c as long as the hash block length
 IPAD is 3636…36 as long as the hash block length
 ![[Pasted image 20260609164646.png|417]]
+This pattern retains security even if the hash function $H$ hast structural weakness like SHA-1. It is secure as long as the compression function is a PRF.
+### CMAC
+CMAC is block-cipher based message authentication and therefore uses a block cipher as the building block. It is similar to CBC-Mode but the last block is processed differently and only the last cipher is kept.
+![[Pasted image 20260610110519.png|341]]
+### Dedicated MAC Design
+To improve efficiency, we design a dedicated MAC. Cryptographic hash functions offer stronger guarantees than we need for MAC, like SHA-2 is collision resistant but we would only need PRF-like compression. This is acceptable because the attacker does not know the key so even if he finds collisions, they would not work without knowing the key.
+#### Universal Hashing
+A universal hash has two inputs: key $K$ and message $M$. The function is designed such that the probability of $UH(K,m)=UH(K,M')$ is negligible. This hash is easier to satisfy than being a full PRF while being fast to evaluate.
+#### One-Time MAC
+Other designs employ using a key only once, since using it multiple times could leak information about the key. This implementation uses a universal hash and is very fast to run.
+
+Poly1305-AES builds on top of this by adding AES encryption to the one-time MAC using two keys and a nonce:
+$MAC(K1,K2,N,M) = UH(K1,M)+AES(K2,N)$
+# Authenticated Encryption
+Authenticated Encryption with Associated Data (AEAD) combines confidentiality with authenticity. This means we can establish a secure and authentic channel at the same time. This is achieved by combining ciphers for message encryption and MAC for signing.
+## Secure channel from scratch
+There are three main ways we can go about this:
+1. Encrypt and MAC -> risk of leaking information since MAC is not built to hide information
+2. MAC then encrypt -> was used in TLS but is vulnerable to padding oracle attacks
+3. Encrypt then MAC -> provably secure, used in IPsec
+
+| Encrypt and Mac                           | MAC then encrypt                          | Encrypt then MAC                          |
+| ----------------------------------------- | ----------------------------------------- | ----------------------------------------- |
+| ![[Pasted image 20260610154856.png\|291]] | ![[Pasted image 20260610154925.png\|247]] | ![[Pasted image 20260610154943.png\|186]] |
+The overall construction goes as follows: encrypt the plaintext -> add MAC computed from cipher -> send over secure channel -> validate MAC -> decrypt cipher
+## Associated Data
+Often times a plain-text comes with additional data called associated data like network packet headers. The associated data is always public. AEAD ensures that the actual message is encrypted and the encrypted message plus the AD is authenticated:
+![[Pasted image 20260610163824.png|378]]
+## AES-GCM
+AES in galios/counter mode is a block cipher AEAD standard that is used industry wide (TLS, SSH, IPsec). I encompasses two components:
+- AES-CTR mode for message encryption
+- GHASH for authentication, basically multiplication in a [[Algebraic structures for crypto#Finite Fields|Finite Field]] 
+It is essential that the IV is unique.
+AES-GCM is very fast on modern CPUs and can be parallelised
+
