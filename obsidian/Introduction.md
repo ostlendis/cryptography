@@ -2,8 +2,8 @@ This course is split into 4 categories:
 
 - [[Randomness]] and random number generation
 - [[Symmetric cryptography]] 
-- Asymmetric cryptography
-- Posts-Quantum cryptography
+- [[Asymmetric cryptography]]
+- [[Posts-Quantum Cryptography]]
 
 ## Encryption Attacker Model
 To determine what good enough encryption is, we have to define the assumed attacker. There are two main attacker models:
