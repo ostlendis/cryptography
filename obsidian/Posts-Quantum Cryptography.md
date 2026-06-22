@@ -52,3 +52,8 @@ The inventroy must be connected to policy questions like
 Policy and inventory are not static and must be updated regularly, best with versioning. It enables cryptographic agility allowing you to easily replace schemes if it becomes broken.
 Make sure your partners in your supply chain do the same and are ready for PQC migration.
 ### Priorities
+An attacker could harvest data now and decrypt secretes once he has access to a quantum computer.
+We need to assess what the impact is if one of our used schemes used is vulnerable such as data loss or impersonation. The impact can be ranked as high, medium and low, similar to normal threat modelling.
+## Migration
+You need to stay agile during migration: build a plan, start execution, periodically reevaluate. An imperfect execution is better than nothing.
+You can either replace the components in place or move the service to a different platform altogether and then retire old services.

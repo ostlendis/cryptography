@@ -2,9 +2,8 @@ This course is split into 4 categories:
 
 - [[Randomness]] and random number generation
 - [[Symmetric cryptography]] 
-- [[Asymmetric cryptography]]
+- [[Asymmetric Cryptography]]
 - [[Posts-Quantum Cryptography]]
-
 ## Encryption Attacker Model
 To determine what good enough encryption is, we have to define the assumed attacker. There are two main attacker models:
 - CPA - The attacker can perform encryption queries
@@ -25,3 +24,4 @@ The security goal and attacker model can be combined:
 	- Indistinguishability in the CCA model, the attacker can also make encryption queries
 - NM-CPA
 - NM-CCA
+[[Security]] ensures that cryptographic schemes are actually secure and hold to assumptions.
