@@ -1,10 +1,8 @@
 Stream ciphers are used to encrypt messages in a stream, rather than breaking the message into a block.
 This works by creating a key-stream of bits that is then xor-ed with the message bits. A Stream Cipher uses a Nonce, that is sent along, to make each encryption unique and a key.
 Stream Ciphers are used because they are faster on hardware than block ciphers and padding oracle attacks are not possible.
-
 # Security
 The security of a stream cipher can be reduced to producing a keystream that is indistinguishable from true randomness, similar to [[Pseudo Random Number Generators]]
-
 # Types of stream ciphers
 There are two types of stream ciphers, stateful and counter based:
 ![[Pasted image 20260609102401.png|495]]
